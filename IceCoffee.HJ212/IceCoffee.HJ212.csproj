@@ -14,7 +14,7 @@
 		<Product>IceCoffee</Product>
 		<RepositoryUrl>https://github.com/1249993110/IceCoffee.HJ212</RepositoryUrl>
 		<TargetFrameworks>net6.0;netcoreapp3.1;net461</TargetFrameworks>
-		<Version>1.0.0.3</Version>
+		<Version>1.0.0.0</Version>
 		<LangVersion>10.0</LangVersion>
 	</PropertyGroup>
 
