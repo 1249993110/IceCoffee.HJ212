@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Authors>IceCoffee</Authors>
+		<Company>LuoShuiTianYi</Company>
+		<Copyright>Copyright (c) 2022 IceCoffee</Copyright>
+		<Description>HJ212协议</Description>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<PackageProjectUrl>https://github.com/1249993110/IceCoffee.HJ212</PackageProjectUrl>
+		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+		<Product>IceCoffee</Product>
+		<RepositoryUrl>https://github.com/1249993110/IceCoffee.HJ212</RepositoryUrl>
+		<TargetFrameworks>net6.0;netcoreapp3.1;net461</TargetFrameworks>
+		<Version>1.0.0.3</Version>
+		<LangVersion>10.0</LangVersion>
+	</PropertyGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="IceCoffee.Common" Version="1.0.2.2" />
+		<PackageReference Include="IceCoffee.FastSocket" Version="1.0.1.4" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\LICENSE">
+			<Pack>True</Pack>
+			<PackagePath></PackagePath>
+		</None>
+
+		<None Include="..\README.md" />
+	</ItemGroup>
+</Project>
