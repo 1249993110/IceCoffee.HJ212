@@ -34,21 +34,20 @@ namespace IceCoffee.HJ212
 
         protected override void OnReceived()
         {
-
             if (ReadBuffer.IndexOf(35) != 0L)// '#'
             {
                 throw new Exception("异常TCP连接 IP: " + RemoteIPEndPoint);
             }
 
-            string line = null;
+            string rawText = null;
             while (ReadBuffer.CanReadLine)
             {
                 try
                 {
                     byte[] data = ReadBuffer.ReadLine();
-                    line = Encoding.UTF8.GetString(data);
-                    NetPackage netPackage = NetPackage.Parse(line, GetUnpackCache);
-                    ((NetServer)Server).RaiseReceivedData(this, line, netPackage);
+                    rawText = Encoding.UTF8.GetString(data);
+                    NetPackage netPackage = NetPackage.Parse(rawText, GetUnpackCache);
+                    ((NetServer)Server).RaiseReceivedData(this, netPackage, rawText);
 
                     if (netPackage.DataSegment.PackageFlag != null && netPackage.DataSegment.PackageFlag.A == 1)
                     {
@@ -57,7 +56,7 @@ namespace IceCoffee.HJ212
                 }
                 catch (Exception ex)
                 {
-                    throw new Exception("数据报：" + line, ex);
+                    throw new Exception("数据报：" + rawText, ex);
                 }
             }
         }
@@ -75,12 +74,12 @@ namespace IceCoffee.HJ212
                 netPackage.DataSegment.PackageFlag.D = 0;
                 netPackage.DataSegment.CpCommand.ExeRtn = ResponseCode.ExecSucceeded;
 
-                string line = netPackage.Serialize();
-                byte[] data = Encoding.UTF8.GetBytes(line);
+                string rawText = netPackage.Serialize();
+                byte[] data = Encoding.UTF8.GetBytes(rawText);
 
                 SendAsync(data);
 
-                ((NetServer)Server).RaiseSendData(this, line);
+                ((NetServer)Server).RaiseSendData(this, netPackage, rawText);
             }
             catch (Exception ex)
             {

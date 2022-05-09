@@ -38,7 +38,7 @@ namespace IceCoffee.HJ212.Models
                 cpCommand.DataTime = DateTime.ParseExact(cp.GetMidStr("DataTime=", ";"), "yyyyMMddHHmmss", null);
 
                 cp = cp.Substring(24);
-                foreach (string project in cp.Split(';'))
+                foreach (string project in cp.Split(';', StringSplitOptions.RemoveEmptyEntries))
                 {
                     var pollutantInfo = new PollutantInfo();
 

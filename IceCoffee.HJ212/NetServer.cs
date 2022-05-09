@@ -10,8 +10,8 @@ namespace IceCoffee.HJ212
 {
     public class NetServer : TcpServer
     {
-        public event Action<NetSession, string, NetPackage> ReceivedData;
-        public event Action<NetSession, string> SendData;
+        public event Action<NetSession, NetPackage, string> ReceivedData;
+        public event Action<NetSession, NetPackage, string> SendData;
 
         public NetServer(IPAddress address, int port, TcpServerOptions options = null)
             : base(address, port, options ?? new TcpServerOptions() { KeepAlive = true })
@@ -34,19 +34,14 @@ namespace IceCoffee.HJ212
         /// <summary>
         /// 引发收到数据事件
         /// </summary>
-        internal void RaiseReceivedData(NetSession netSession, string line, NetPackage netPackage)
+        internal void RaiseReceivedData(NetSession netSession, NetPackage netPackage, string rawText)
         {
-            ReceivedData?.Invoke(netSession, line, netPackage);
+            ReceivedData?.Invoke(netSession, netPackage, rawText);
         }
 
-        /// <summary>
-        /// 引发发送数据事件
-        /// </summary>
-        /// <param name="netSession"></param>
-        /// <param name="line"></param>
-        internal void RaiseSendData(NetSession netSession, string line)
+        internal void RaiseSendData(NetSession netSession, NetPackage netPackage, string rawText)
         {
-            SendData?.Invoke(netSession, line);
+            SendData?.Invoke(netSession, netPackage, rawText);
         }
     }
 }
