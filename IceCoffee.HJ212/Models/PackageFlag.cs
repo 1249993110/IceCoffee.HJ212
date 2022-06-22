@@ -79,7 +79,11 @@ namespace IceCoffee.HJ212
         /// <param name="b"></param>
         /// <param name="index"></param>
         /// <returns></returns>
-        private static byte GetBit(byte b, int index) { return ((b & (1 << index)) > 0) ? (byte)1 : (byte)0; }
+        private static byte GetBit(byte b, int index) 
+        {
+            // (byte)((from & (0xFF << (index * 8))) >> (index * 8))
+            return ((b & (1 << index)) > 0) ? (byte)1 : (byte)0; 
+        }
 
         /// <summary>
         /// 将第index位设为1
