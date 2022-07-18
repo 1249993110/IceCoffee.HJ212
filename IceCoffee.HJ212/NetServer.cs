@@ -10,7 +10,14 @@ namespace IceCoffee.HJ212
 {
     public class NetServer : TcpServer
     {
+        /// <summary>
+        /// 收到数据事件
+        /// </summary>
         public event Action<NetSession, NetPackage, string> ReceivedData;
+
+        /// <summary>
+        /// 发送数据事件
+        /// </summary>
         public event Action<NetSession, NetPackage, string> SendData;
 
         public NetServer(IPAddress address, int port, TcpServerOptions options = null)
@@ -39,6 +46,12 @@ namespace IceCoffee.HJ212
             ReceivedData?.Invoke(netSession, netPackage, rawText);
         }
 
+        /// <summary>
+        /// 引发发送数据事件
+        /// </summary>
+        /// <param name="netSession"></param>
+        /// <param name="netPackage"></param>
+        /// <param name="rawText"></param>
         internal void RaiseSendData(NetSession netSession, NetPackage netPackage, string rawText)
         {
             SendData?.Invoke(netSession, netPackage, rawText);
