@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace IceCoffee.HJ212.Models
 {
@@ -36,9 +37,13 @@ namespace IceCoffee.HJ212.Models
                 cpCommand.PollutantInfo = new List<PollutantInfo>();
 
                 cpCommand.DataTime = DateTime.ParseExact(cp.GetMidStr("DataTime=", ";"), "yyyyMMddHHmmss", null);
-
+  
                 cp = cp.Substring(24);
-                foreach (string project in cp.Split(new char[';'], StringSplitOptions.RemoveEmptyEntries))
+#if NET462
+                foreach (string project in cp.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+#else
+                foreach (string project in cp.Split(';', StringSplitOptions.RemoveEmptyEntries))
+#endif
                 {
                     var pollutantInfo = new PollutantInfo();
 
