@@ -1,4 +1,7 @@
 # IceCoffee.HJ212
+
+[![NuGet Version](https://img.shields.io/nuget/v/IceCoffee.HJ212.svg)](https://www.nuget.org/packages?q=IceCoffee.HJ212)
+
 本仓库是根据《污染物在线监控（监测）系统数据传输标准 HJ 212-2017.pdf》文档，对接收到的212协议报文进行接收和解析。
 
 ## HJ212协议简介
