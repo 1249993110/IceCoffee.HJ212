@@ -15,12 +15,12 @@
 		<Product>IceCoffee</Product>
 		<RepositoryUrl>https://github.com/1249993110/IceCoffee.HJ212</RepositoryUrl>
 		<TargetFrameworks>net6.0;netcoreapp3.1;net462</TargetFrameworks>
-		<Version>1.0.1.0</Version>
+		<Version>1.0.1.1</Version>
 		<LangVersion>10.0</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="IceCoffee.FastSocket" Version="1.0.1.10" />
+		<PackageReference Include="IceCoffee.FastSocket" Version="1.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>
