@@ -39,13 +39,14 @@ namespace IceCoffee.HJ212.Models
                 cpCommand.DataTime = DateTime.ParseExact(cp.GetMidStr("DataTime=", ";"), "yyyyMMddHHmmss", null);
   
                 cp = cp.Substring(24);
-#if NET462
-                foreach (string project in cp.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
-#else
+#if NETCOREAPP
                 foreach (string project in cp.Split(';', StringSplitOptions.RemoveEmptyEntries))
+#else
+                foreach (string project in cp.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
+
 #endif
-                {
-                    var pollutantInfo = new PollutantInfo();
+                    {
+                        var pollutantInfo = new PollutantInfo();
 
                     string[] classes = project.Split(',');
                     foreach (string @class in classes)
