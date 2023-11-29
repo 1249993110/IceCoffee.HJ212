@@ -28,7 +28,7 @@ namespace IceCoffee.HJ212.Models
         public decimal Rtd { get; set; } = InvaildValue;
 
         /// <summary>
-        /// 污染物指定时问内平均值
+        /// 污染物指定时间内平均值
         /// </summary>
         /// <remarks>
         /// 默认值为约定的无效值 <see cref="InvaildValue"/>
@@ -36,7 +36,7 @@ namespace IceCoffee.HJ212.Models
         public decimal Avg { get; set; } = InvaildValue;
 
         /// <summary>
-        /// 污染物指定时问内最大值
+        /// 污染物指定时间内最大值
         /// </summary>
         /// <remarks>
         /// 默认值为约定的无效值 <see cref="InvaildValue"/>
@@ -44,7 +44,7 @@ namespace IceCoffee.HJ212.Models
         public decimal Max { get; set; } = InvaildValue;
 
         /// <summary>
-        /// 污染物指定时问内最小值
+        /// 污染物指定时间内最小值
         /// </summary>
         /// <remarks>
         /// 默认值为约定的无效值 <see cref="InvaildValue"/>
@@ -52,7 +52,7 @@ namespace IceCoffee.HJ212.Models
         public decimal Min { get; set; } = InvaildValue;
 
         /// <summary>
-        /// 污染物指定时问内累计值
+        /// 污染物指定时间内累计值
         /// </summary>
         /// <remarks>
         /// 默认值为约定的无效值 <see cref="InvaildValue"/>
