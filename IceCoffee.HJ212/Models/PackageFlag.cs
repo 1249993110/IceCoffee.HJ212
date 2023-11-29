@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace IceCoffee.HJ212
+namespace IceCoffee.HJ212.Models
 {
     /// <summary>
     /// 拆分包及应答标志
