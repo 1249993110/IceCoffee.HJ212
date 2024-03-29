@@ -65,7 +65,7 @@ namespace IceCoffee.HJ212.Models
         /// 序列化
         /// </summary>
         /// <returns></returns>
-        public string Serialize()
+        public virtual string Serialize()
         {
             return Convert.ToInt32($"{V5}{V4}{V3}{V2}{V1}{V0}{D}{A}", 2).ToString();
         }

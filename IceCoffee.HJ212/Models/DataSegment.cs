@@ -146,7 +146,7 @@ namespace IceCoffee.HJ212.Models
         /// 序列化
         /// </summary>
         /// <returns></returns>
-        public string Serialize()
+        public virtual string Serialize()
         {
             return $"QN={QN};ST={ST};CN={(int)CN};PW={PW};MN={MN};Flag={PackageFlag.Serialize()};CP=&&{CpCommand.Serialize()}&&";
         }

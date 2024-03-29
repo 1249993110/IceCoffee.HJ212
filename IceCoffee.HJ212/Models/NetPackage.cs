@@ -43,32 +43,7 @@ namespace IceCoffee.HJ212.Models
         /// </summary>
         public string Tail { get; set; }
 
-        /// <summary>
-        /// CRC16校验
-        /// </summary>
-        /// <param name="arg">需要校验的字符串</param>
-        /// <returns>CRC16 校验码</returns>
-        private static string CRC16(string arg)
-        {
-            char[] puchMsg = arg.ToCharArray();
-            uint i, j, crc_reg, check;
-            crc_reg = 0xFFFF;
-            for (i = 0; i < puchMsg.Length; i++)
-            {
-                crc_reg = (crc_reg >> 8) ^ puchMsg[i];
-                for (j = 0; j < 8; j++)
-                {
-                    check = crc_reg & 0x0001;
-                    crc_reg >>= 1;
-                    if (check == 0x0001)
-                    {
-                        crc_reg ^= 0xA001;
-                    }
-                }
-            }
-
-            return crc_reg.ToString("X2").PadLeft(4, '0');
-        }
+        
 
         /// <summary>
         /// 解析
@@ -87,7 +62,7 @@ namespace IceCoffee.HJ212.Models
                 string dataSegment = line.Substring(6, netPackage.DataSegmentLength);
 
                 string crcCode = line.Substring(6 + netPackage.DataSegmentLength, 4);
-                string calcCrcCode = CRC16(dataSegment);
+                string calcCrcCode = Utils.CRC16(dataSegment);
                 if (crcCode != calcCrcCode)
                 {
                     throw new Exception("CRC校验失败 " + line);
@@ -109,11 +84,11 @@ namespace IceCoffee.HJ212.Models
         /// 序列化
         /// </summary>
         /// <returns></returns>
-        public string Serialize()
+        public virtual string Serialize()
         {
             string dataSegment = DataSegment.Serialize();
             DataSegmentLength = dataSegment.Length;
-            CrcCode = CRC16(dataSegment);
+            CrcCode = Utils.CRC16(dataSegment);
 
             return $"{Head}{DataSegmentLength.ToString().PadLeft(4, '0')}{dataSegment}{CrcCode}{Tail}";
         }

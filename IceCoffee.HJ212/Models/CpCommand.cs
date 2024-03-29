@@ -116,7 +116,7 @@ namespace IceCoffee.HJ212.Models
         /// 序列化
         /// </summary>
         /// <returns></returns>
-        public string Serialize()
+        public virtual string Serialize()
         {
             return "ExeRtn=" + (int)ExeRtn;
         }
