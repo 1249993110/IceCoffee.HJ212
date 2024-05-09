@@ -11,31 +11,26 @@ namespace IceCoffee.HJ212.Models
     public class DataSegment
     {
         /// <summary>
-        /// 默认应答系统编码
-        /// </summary>
-        public const string ResponseST = "91";
-
-        /// <summary>
-        /// 请求编号
+        /// 请求编码
         /// </summary>
         /// <remarks>
-        /// yyyyMMddHHmmssZZZ 取当前系统时间， 精确到毫秒值， 用来唯一标识一次命令交互
+        /// yyyyMMddHHmmssZZZ 取当前系统时间, 精确到毫秒值, 用来唯一标识一次命令交互
         /// </remarks>
         public string QN { get; set; }
 
         /// <summary>
-        /// 系统编号
+        /// 系统编码
         /// </summary>
-        public string ST { get; set; }
+        public int ST { get; set; }
 
         /// <summary>
         /// 命令编码
         /// <para>详见附录 2</para>
         /// </summary>
-        public CommandNumber CN { get; set; }
+        public int CN { get; set; }
 
         /// <summary>
-        /// 访问密码
+        /// 密码
         /// <para>对接时提供给各个对接站点</para>
         /// </summary>
         public string PW { get; set; }
@@ -89,19 +84,19 @@ namespace IceCoffee.HJ212.Models
                     outEnd = 0;
                 }
 
-                dataSegment.ST = data.GetMidStr("ST=", ";", out outEnd, outEnd);
-                dataSegment.CN = (CommandNumber)int.Parse(data.GetMidStr("CN=", ";", out outEnd, outEnd));
+                dataSegment.ST = int.Parse(data.GetMidStr("ST=", ";", out outEnd, outEnd));
+                dataSegment.CN = int.Parse(data.GetMidStr("CN=", ";", out outEnd, outEnd));
                 dataSegment.PW = data.GetMidStr("PW=", ";", out outEnd, outEnd);
                 dataSegment.MN = data.GetMidStr("MN=", ";", out outEnd, outEnd);
 
                 string packageFlag = data.GetMidStr("Flag=", ";", out outEnd, outEnd);
-                if (string.IsNullOrEmpty(packageFlag) || int.TryParse(packageFlag, out _) == false || outEnd < 0)
+                if (outEnd < 0 || string.IsNullOrEmpty(packageFlag) || byte.TryParse(packageFlag, out var flag) == false)
                 {
                     outEnd = 0;
                 }
                 else
                 {
-                    dataSegment.PackageFlag = PackageFlag.Parse(packageFlag);
+                    dataSegment.PackageFlag = new PackageFlag(flag);
                 }
 
                 if (dataSegment.PackageFlag != null && dataSegment.PackageFlag.D == 1)
@@ -119,7 +114,7 @@ namespace IceCoffee.HJ212.Models
                     else if (dataSegment.PNUM == dataSegment.PNO)// 最后一个包
                     {
                         cache.Append(cp.Substring(23));
-                        dataSegment.CpCommand = CpCommand.Parse(cache.ToString());
+                        dataSegment.CpCommand = new CpCommand(cache.ToString());
                         cache.Clear();
                     }
                     else// 中间的包
@@ -129,9 +124,9 @@ namespace IceCoffee.HJ212.Models
                 }
                 else
                 {
-                    string cp = data.GetMidStr("CP=&&", "&&", out outEnd, outEnd);
+                    string text = data.GetMidStr("CP=&&", "&&", out outEnd, outEnd);
                     // 过滤心跳包
-                    dataSegment.CpCommand = dataSegment.CN == CommandNumber.HeartbeatPackage ? new CpCommand() : CpCommand.Parse(cp);
+                    dataSegment.CpCommand = new CpCommand(text);
                 }
 
                 return dataSegment;
@@ -148,7 +143,7 @@ namespace IceCoffee.HJ212.Models
         /// <returns></returns>
         public virtual string Serialize()
         {
-            return $"QN={QN};ST={ST};CN={(int)CN};PW={PW};MN={MN};Flag={PackageFlag.Serialize()};CP=&&{CpCommand.Serialize()}&&";
+            return $"QN={QN};ST={ST};CN={(int)CN};PW={PW};MN={MN};Flag={PackageFlag.Value};CP=&&{CpCommand.RawText}&&";
         }
     }
 }

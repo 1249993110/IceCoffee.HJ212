@@ -1,42 +1,48 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IceCoffee.HJ212.Models
+﻿namespace IceCoffee.HJ212.Models
 {
     /// <summary>
     /// 命令编码
     /// </summary>
-    public enum CommandNumber
+    public struct CommandNumbers
     {
         /// <summary>
-        /// 心跳包
+        /// 现场机时间校准请求 
         /// </summary>
-        HeartbeatPackage = 1062,
+        public const int TimeCalibration = 1013;
 
         /// <summary>
-        /// 工控机向上位机上传实时数据
+        /// 上传实时数据
         /// </summary>
-        UploadRealTimeData = 2011,
+        public const int UploadRealTimeData = 2011;
 
         /// <summary>
-        /// 工控机向上位机上传分钟数据
+        /// 上传分钟数据
         /// </summary>
-        UploadMinuteData = 2051,
+        public const int UploadMinuteData = 2051;
 
         /// <summary>
-        /// 工控机向上位机上传小时数据
+        /// 上传小时数据
         /// </summary>
-        UploadHourlyData = 2061,
+        public const int UploadHourlyData = 2061;
 
         /// <summary>
-        /// 工控机向上位机上传日数据
+        /// 上传日数据
         /// </summary>
-        UploadDailyData = 2031,
+        public const int UploadDailyData = 2031;
 
         /// <summary>
-        /// 上位机向工控机返回应答
+        /// 零点校准、量程校准
         /// </summary>
-        DataResponse = 9014   
+        public const int ZeroAndRangeCalibration = 3011;
+
+        /// <summary>
+        /// 回应通知
+        /// </summary>
+        public const int NoticeResponse = 9013;
+
+        /// <summary>
+        /// 数据应答
+        /// </summary>
+        public const int DataResponse = 9014;
     }
 }

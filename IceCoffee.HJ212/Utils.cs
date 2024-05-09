@@ -10,9 +10,10 @@
         public static string CRC16(string arg)
         {
             char[] puchMsg = arg.ToCharArray();
+            int len = puchMsg.Length;
             uint i, j, crc_reg, check;
             crc_reg = 0xFFFF;
-            for (i = 0; i < puchMsg.Length; i++)
+            for (i = 0; i < len; i++)
             {
                 crc_reg = (crc_reg >> 8) ^ puchMsg[i];
                 for (j = 0; j < 8; j++)

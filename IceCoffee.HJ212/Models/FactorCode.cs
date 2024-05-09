@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IceCoffee.HJ212.Models
+﻿namespace IceCoffee.HJ212.Models
 {
     /// <summary>
     /// 污染物因子编码

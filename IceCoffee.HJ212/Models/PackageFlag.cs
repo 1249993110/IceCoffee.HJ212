@@ -1,30 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace IceCoffee.HJ212.Models
+﻿namespace IceCoffee.HJ212.Models
 {
     /// <summary>
     /// 拆分包及应答标志
     /// </summary>
     public class PackageFlag
     {
-        public byte V5 { get; set; }
-        public byte V4 { get; set; }
-        public byte V3 { get; set; }
-        public byte V2 { get; set; }
-        public byte V1 { get; set; }
-        public byte V0 { get; set; }
-
-        /// <summary>
-        /// 命令是否应答：1－应答，0－不应答
-        /// </summary>
-        public byte A { get; set; }
+        public byte V5 => GetBit(Value, 7);
+        public byte V4 => GetBit(Value, 6);
+        public byte V3 => GetBit(Value, 5);
+        public byte V2 => GetBit(Value, 4);
+        public byte V1 => GetBit(Value, 3);
+        public byte V0 => GetBit(Value, 2);
 
         /// <summary>
         /// 是否有数据包序号：1 - 数据包中包含包号和总包数两部分，0 - 数据包中不包含包号和总包数两部分
         /// </summary>
-        public byte D { get; set; }
+        public byte D => GetBit(Value, 1);
+
+        /// <summary>
+        /// 命令是否应答：1－应答，0－不应答
+        /// </summary>
+        public byte A => GetBit(Value, 0);
 
         /// <summary>
         /// 标准版本号
@@ -40,34 +36,13 @@ namespace IceCoffee.HJ212.Models
         }
 
         /// <summary>
-        /// 解析
+        /// Flag值
         /// </summary>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public static PackageFlag Parse(string data)
-        {
-            byte flag = byte.Parse(data);
-            return new PackageFlag()
-            {
+        public byte Value { get; private set; }
 
-                V5 = GetBit(flag, 7),
-                V4 = GetBit(flag, 6),
-                V3 = GetBit(flag, 5),
-                V2 = GetBit(flag, 4),
-                V1 = GetBit(flag, 3),
-                V0 = GetBit(flag, 2),
-                D = GetBit(flag, 1),
-                A = GetBit(flag, 0)
-            };
-        }
-
-        /// <summary>
-        /// 序列化
-        /// </summary>
-        /// <returns></returns>
-        public virtual string Serialize()
+        public PackageFlag(byte flag)
         {
-            return Convert.ToInt32($"{V5}{V4}{V3}{V2}{V1}{V0}{D}{A}", 2).ToString();
+            Value = flag;
         }
 
         /// <summary>

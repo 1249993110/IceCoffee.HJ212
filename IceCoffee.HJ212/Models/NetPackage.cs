@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace IceCoffee.HJ212.Models
@@ -13,6 +12,7 @@ namespace IceCoffee.HJ212.Models
         /// 默认头
         /// </summary>
         public const string FixedHead = "##";
+
         /// <summary>
         /// 默认尾
         /// </summary>
@@ -43,8 +43,6 @@ namespace IceCoffee.HJ212.Models
         /// </summary>
         public string Tail { get; set; }
 
-        
-
         /// <summary>
         /// 解析
         /// </summary>
@@ -55,7 +53,7 @@ namespace IceCoffee.HJ212.Models
         {
             try
             {
-                NetPackage netPackage = new NetPackage();
+                var netPackage = new NetPackage();
                 netPackage.Head = line.Substring(0, 2);
                 netPackage.DataSegmentLength = int.Parse(line.Substring(2, 4));
 
@@ -91,6 +89,26 @@ namespace IceCoffee.HJ212.Models
             CrcCode = Utils.CRC16(dataSegment);
 
             return $"{Head}{DataSegmentLength.ToString().PadLeft(4, '0')}{dataSegment}{CrcCode}{Tail}";
+        }
+
+        public NetPackage Clone()
+        {
+            var dataSegment = this.DataSegment;
+            return new NetPackage()
+            {
+                Head = this.Head,
+                DataSegment = new DataSegment()
+                {
+                    QN = dataSegment.QN,
+                    PW = dataSegment.PW,
+                    MN = dataSegment.MN,
+                    PackageFlag = new PackageFlag(dataSegment.PackageFlag.Value),
+                    ST = dataSegment.ST,
+                    CN = dataSegment.CN,
+                    CpCommand = dataSegment.CpCommand,
+                },
+                Tail = this.Tail
+            };
         }
     }
 }

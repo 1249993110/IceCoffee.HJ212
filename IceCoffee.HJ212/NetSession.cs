@@ -48,11 +48,6 @@ namespace IceCoffee.HJ212
                     rawText = Encoding.UTF8.GetString(data);
                     NetPackage netPackage = NetPackage.Parse(rawText, GetUnpackCache);
                     ((NetServer)Server).RaiseReceivedData(this, netPackage, rawText);
-
-                    if (netPackage.DataSegment.PackageFlag != null && netPackage.DataSegment.PackageFlag.A == 1)
-                    {
-                        Response(netPackage);
-                    }
                 }
                 catch (Exception ex)
                 {
@@ -64,27 +59,13 @@ namespace IceCoffee.HJ212
         /// <summary>
         /// 应答
         /// </summary>
-        private void Response(NetPackage netPackage)
+        public void Response(NetPackage netPackage)
         {
-            try
-            {
-                netPackage.DataSegment.ST = DataSegment.ResponseST;
-                netPackage.DataSegment.CN = CommandNumber.DataResponse;
-                netPackage.DataSegment.PackageFlag.A = 0;
-                netPackage.DataSegment.PackageFlag.D = 0;
-                netPackage.DataSegment.CpCommand.ExeRtn = ResponseCode.ExecSucceeded;
+            string rawText = netPackage.Serialize();
+            byte[] data = Encoding.UTF8.GetBytes(rawText);
 
-                string rawText = netPackage.Serialize();
-                byte[] data = Encoding.UTF8.GetBytes(rawText);
-
-                SendAsync(data);
-
-                ((NetServer)Server).RaiseSendData(this, netPackage, rawText);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error in NetSession", ex);
-            }
+            this.SendAsync(data);
+            ((NetServer)Server).RaiseSendData(this, netPackage, rawText);
         }
     }
 

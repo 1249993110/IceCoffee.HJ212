@@ -1,124 +1,83 @@
 ﻿using IceCoffee.Common.Extensions;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
 
 namespace IceCoffee.HJ212.Models
 {
     /// <summary>
-    /// CP指令
+    /// CP指令参数
     /// </summary>
     public class CpCommand
     {
-        public ResponseCode ExeRtn { get; set; }
-
-        /// <summary>
-        /// 数据时间信息
-        /// </summary>
-        public DateTime DataTime { get; set; }
-
-        /// <summary>
-        /// 污染物信息
-        /// </summary>
-        public List<PollutantInfo> PollutantInfo { get; set; }
-
-        /// <summary>
-        /// 解析
-        /// </summary>
-        /// <param name="cp"></param>
-        /// <returns></returns>
-        public static CpCommand Parse(string cp)
+        public CpCommand()
         {
-            try
-            {
-                var cpCommand = new CpCommand();
+            RawText = string.Empty;
+        }
 
-                cpCommand.PollutantInfo = new List<PollutantInfo>();
-
-                cpCommand.DataTime = DateTime.ParseExact(cp.GetMidStr("DataTime=", ";"), "yyyyMMddHHmmss", null);
-  
-                cp = cp.Substring(24);
-#if NETCOREAPP
-                foreach (string project in cp.Split(';', StringSplitOptions.RemoveEmptyEntries))
-#else
-                foreach (string project in cp.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries))
-
-#endif
-                    {
-                        var pollutantInfo = new PollutantInfo();
-
-                    string[] classes = project.Split(',');
-                    foreach (string @class in classes)
-                    {
-                        string[] keyValue = @class.Split('=');
-                        string key = keyValue[0];
-                        string value = keyValue[1];
-
-                        string[] factorCodeType = key.Split('-');
-                        string factorCode = factorCodeType[0];
-                        string type = factorCodeType[1];
-
-                        pollutantInfo.FactorCode = (FactorCode)Enum.Parse(typeof(FactorCode), factorCode);
-
-                        switch (type)
-                        {
-                            case nameof(Models.PollutantInfo.Rtd):
-                                if (string.IsNullOrEmpty(value) == false && decimal.TryParse(value, out decimal rtd))
-                                {
-                                    pollutantInfo.Rtd = rtd;
-                                }
-                                break;
-                            case nameof(Models.PollutantInfo.Avg):
-                                if (string.IsNullOrEmpty(value) == false && decimal.TryParse(value, out decimal avg))
-                                {
-                                    pollutantInfo.Avg = avg;
-                                }
-                                break;
-                            case nameof(Models.PollutantInfo.Max):
-                                if (string.IsNullOrEmpty(value) == false && decimal.TryParse(value, out decimal max))
-                                {
-                                    pollutantInfo.Max = max;
-                                }
-                                break;
-                            case nameof(Models.PollutantInfo.Min):
-                                if (string.IsNullOrEmpty(value) == false && decimal.TryParse(value, out decimal min))
-                                {
-                                    pollutantInfo.Min = min;
-                                }
-                                break;
-                            case nameof(Models.PollutantInfo.Cou):
-                                if (string.IsNullOrEmpty(value) == false && decimal.TryParse(value, out decimal cou))
-                                {
-                                    pollutantInfo.Cou = cou;
-                                }
-                                break;
-                            case nameof(Models.PollutantInfo.Flag):
-                                pollutantInfo.Flag = (InstrumentationDataFlag)Enum.Parse(typeof(InstrumentationDataFlag), value);
-                                break;
-                            default:
-                                throw new Exception("无效的CP指令字段名");
-                        }
-                    }
-
-                    cpCommand.PollutantInfo.Add(pollutantInfo);
-                }
-
-                return cpCommand;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception("Error in CpCommand.Parse", ex);
-            }
+        public CpCommand(string rawText)
+        {
+            RawText = rawText;
         }
 
         /// <summary>
-        /// 序列化
+        /// 原始文本
         /// </summary>
-        /// <returns></returns>
-        public virtual string Serialize()
+        public string RawText { get; private set; }
+
+        /// <summary>
+        /// 分号分割后的集合
+        /// </summary>
+        public string[] GetValues()
         {
-            return "ExeRtn=" + (int)ExeRtn;
+#if NETCOREAPP
+            return RawText.Split(';', StringSplitOptions.RemoveEmptyEntries);
+#else
+            return RawText.Split(new char[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
+#endif
+        }
+
+        /// <summary>
+        /// 获取日期
+        /// </summary>
+        /// <param name="startIndex"></param>
+        /// <returns></returns>
+        public DateTime GetDateTime(int startIndex = 0)
+        {
+            return GetDateTime(RawText, startIndex);
+        }
+
+        /// <summary>
+        /// 尝试获取值
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool TryGetValue(string key, out string value)
+        {
+            return TryGetValue(RawText, key, out value);
+        }
+
+        /// <summary>
+        /// 获取日期
+        /// </summary>
+        /// <param name="rawText"></param>
+        /// <param name="startIndex"></param>
+        /// <returns></returns>
+        public static DateTime GetDateTime(string rawText, int startIndex = 0)
+        {
+            return DateTime.ParseExact(rawText.Substring(startIndex, 14), "yyyyMMddHHmmss", null);
+        }
+
+        /// <summary>
+        /// 尝试获取值
+        /// </summary>
+        /// <param name="rawText"></param>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static bool TryGetValue(string rawText, string key, out string value)
+        {
+            value = rawText.GetMidStr(key, ";");
+            return string.IsNullOrEmpty(value) == false;
         }
     }
 }
