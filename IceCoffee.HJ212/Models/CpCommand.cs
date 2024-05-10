@@ -76,7 +76,7 @@ namespace IceCoffee.HJ212.Models
         /// <returns></returns>
         public static bool TryGetValue(string rawText, string key, out string value)
         {
-            value = rawText.GetMidStr(key, ";");
+            value = rawText.GetMidStr(key + "=", ";");
             return string.IsNullOrEmpty(value) == false;
         }
     }
