@@ -40,7 +40,7 @@ namespace IceCoffee.HJ212.Models
         /// </summary>
         /// <param name="startIndex"></param>
         /// <returns></returns>
-        public DateTime GetDateTime(int startIndex = 0)
+        public DateTime GetDateTime(int startIndex)
         {
             return GetDateTime(RawText, startIndex);
         }
@@ -62,7 +62,7 @@ namespace IceCoffee.HJ212.Models
         /// <param name="rawText"></param>
         /// <param name="startIndex"></param>
         /// <returns></returns>
-        public static DateTime GetDateTime(string rawText, int startIndex = 0)
+        public static DateTime GetDateTime(string rawText, int startIndex)
         {
             return DateTime.ParseExact(rawText.Substring(startIndex, 14), "yyyyMMddHHmmss", null);
         }
