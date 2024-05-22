@@ -50,10 +50,11 @@ namespace IceCoffee.HJ212.Models
         /// </summary>
         /// <param name="key"></param>
         /// <param name="value"></param>
+        /// <param name="end"></param>
         /// <returns></returns>
-        public bool TryGetValue(string key, out string value)
+        public bool TryGetValue(string key, out string value, string end = ";")
         {
-            return TryGetValue(RawText, key, out value);
+            return TryGetValue(RawText, key, out value, end);
         }
 
         /// <summary>
@@ -73,10 +74,11 @@ namespace IceCoffee.HJ212.Models
         /// <param name="rawText"></param>
         /// <param name="key"></param>
         /// <param name="value"></param>
+        /// <param name="end"></param>
         /// <returns></returns>
-        public static bool TryGetValue(string rawText, string key, out string value)
+        public static bool TryGetValue(string rawText, string key, out string value, string end = ";")
         {
-            value = rawText.GetMidStr(key + "=", ";");
+            value = rawText.GetMidStr(key + "=", end);
             return string.IsNullOrEmpty(value) == false;
         }
     }
