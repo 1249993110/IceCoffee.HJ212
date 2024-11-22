@@ -14,13 +14,13 @@
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
 		<Product>IceCoffee</Product>
 		<RepositoryUrl>https://github.com/1249993110/IceCoffee.HJ212</RepositoryUrl>
-		<TargetFrameworks>net8.0;net6.0;netstandard2.0;net462</TargetFrameworks>
-		<Version>1.2.3</Version>
+		<TargetFrameworks>net9.0;net8.0;net6.0;netstandard2.0;net462</TargetFrameworks>
+		<Version>1.2.4</Version>
 		<LangVersion>10.0</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="IceCoffee.FastSocket" Version="1.0.3" />
+		<PackageReference Include="IceCoffee.FastSocket" Version="1.0.4" />
 	</ItemGroup>
 
 	<ItemGroup>

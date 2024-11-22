@@ -36,6 +36,16 @@ namespace IceCoffee.HJ212.Models
         }
 
         /// <summary>
+        /// 获取日期时间
+        /// </summary>
+        /// <returns></returns>
+        public DateTime GetDateTime(string dateTimeKey = "DataTime")
+        {
+            string dateTimeStr = RawText.GetMidStr(dateTimeKey + "=", ";");
+            return DateTime.ParseExact(dateTimeStr, "yyyyMMddHHmmss", null);
+        }
+
+        /// <summary>
         /// 获取日期
         /// </summary>
         /// <param name="startIndex"></param>
