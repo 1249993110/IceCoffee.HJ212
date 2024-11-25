@@ -2,6 +2,7 @@
 {
     /// <summary>
     /// 污染物因子编码
+    /// <para>污染物因子编码采用相关国家和行业标准GB 3096-2008、HJ 524-2009、HJ 525-2009进行定义</para>
     /// </summary>
     public enum FactorCode
     {

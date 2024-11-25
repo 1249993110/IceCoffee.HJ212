@@ -2,6 +2,7 @@
 {
     /// <summary>
     /// 命令编码
+    /// <para>6.6.5命令编码（可扩充）</para>
     /// </summary>
     public struct CommandNumbers
     {

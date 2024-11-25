@@ -1,36 +1,32 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
+		<TargetFrameworks>net9.0;net8.0;netstandard2.0;net462</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
 		<Authors>IceCoffee</Authors>
 		<Company>LuoShuiTianYi</Company>
-		<Copyright>Copyright (c) 2023 IceCoffee</Copyright>
-		<Description>HJ212协议</Description>
+		<Copyright>Copyright (c) 2024 IceCoffee</Copyright>
+		<Description>国标 HJ 212-2017 协议报文接收和解析</Description>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+		<!--取消方法注释警告-->
 		<NoWarn>$(NoWarn);1591</NoWarn>
 		<PackageLicenseFile>LICENSE</PackageLicenseFile>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<PackageProjectUrl>https://github.com/1249993110/IceCoffee.HJ212</PackageProjectUrl>
 		<PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
-		<Product>IceCoffee</Product>
 		<RepositoryUrl>https://github.com/1249993110/IceCoffee.HJ212</RepositoryUrl>
-		<TargetFrameworks>net9.0;net8.0;net6.0;netstandard2.0;net462</TargetFrameworks>
-		<Version>1.2.4</Version>
 		<LangVersion>10.0</LangVersion>
+		<Version>2.0.0</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="IceCoffee.FastSocket" Version="1.0.4" />
+		<None Include="..\LICENSE" Pack="true" PackagePath="" />
+		<None Include="..\README.md" Pack="true" PackagePath="" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\LICENSE">
-			<Pack>True</Pack>
-			<PackagePath></PackagePath>
-		</None>
-		<None Include="..\README.md">
-			<Pack>True</Pack>
-			<PackagePath></PackagePath>
-		</None>
+	  <PackageReference Include="IceCoffee.Common" Version="1.2.0" />
 	</ItemGroup>
 </Project>

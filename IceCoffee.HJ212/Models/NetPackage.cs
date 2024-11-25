@@ -1,5 +1,5 @@
-﻿using System;
-using System.Text;
+﻿using System.Text;
+using static System.Runtime.CompilerServices.RuntimeHelpers;
 
 namespace IceCoffee.HJ212.Models
 {
@@ -20,6 +20,7 @@ namespace IceCoffee.HJ212.Models
 
         /// <summary>
         /// 包头
+        /// <para>固定为"##"</para>
         /// </summary>
         public string Head { get; set; }
 
@@ -40,35 +41,44 @@ namespace IceCoffee.HJ212.Models
 
         /// <summary>
         /// 包尾
+        /// <para>固定为&lt;CR&gt;&lt;LF&gt;（回车、换行）</para>
         /// </summary>
         public string Tail { get; set; }
+
+        public NetPackage()
+        {
+            Head = FixedHead;
+            DataSegment = new DataSegment();
+            CrcCode = string.Empty;
+            Tail = FixedTail;
+        }
 
         /// <summary>
         /// 解析
         /// </summary>
-        /// <param name="line"></param>
-        /// <param name="unpackCacheFunc"></param>
+        /// <param name="rawText"></param>
+        /// <param name="unpackCacheFunc">分包缓存</param>
         /// <returns></returns>
-        public static NetPackage Parse(string line, Func<StringBuilder> unpackCacheFunc = null)
+        public static NetPackage Parse(string rawText, Func<StringBuilder> unpackCacheFunc)
         {
             try
             {
                 var netPackage = new NetPackage();
-                netPackage.Head = line.Substring(0, 2);
-                netPackage.DataSegmentLength = int.Parse(line.Substring(2, 4));
+                netPackage.Head = rawText.Substring(0, 2);
+                netPackage.DataSegmentLength = int.Parse(rawText.Substring(2, 4));
 
-                string dataSegment = line.Substring(6, netPackage.DataSegmentLength);
+                string dataSegment = rawText.Substring(6, netPackage.DataSegmentLength);
 
-                string crcCode = line.Substring(6 + netPackage.DataSegmentLength, 4);
-                string calcCrcCode = Utils.CRC16(dataSegment);
-                if (crcCode != calcCrcCode)
+                string actualCrc = rawText.Substring(6 + netPackage.DataSegmentLength, 4);
+                string expectedCrc = Utils.CRC16(dataSegment);
+                if (actualCrc != expectedCrc)
                 {
-                    throw new Exception("CRC校验失败 " + line);
+                    throw new Exception($"CRC校验失败, 实际值: {actualCrc}, 预期值: {expectedCrc}");
                 }
 
                 netPackage.DataSegment = DataSegment.Parse(dataSegment, unpackCacheFunc);
-                netPackage.CrcCode = crcCode;
-                netPackage.Tail = line.Substring(10 + netPackage.DataSegmentLength);
+                netPackage.CrcCode = actualCrc;
+                netPackage.Tail = FixedTail;
 
                 return netPackage;
             }
@@ -91,22 +101,16 @@ namespace IceCoffee.HJ212.Models
             return $"{Head}{DataSegmentLength.ToString().PadLeft(4, '0')}{dataSegment}{CrcCode}{Tail}";
         }
 
-        public NetPackage Clone()
+        /// <summary>
+        /// 克隆
+        /// </summary>
+        /// <returns></returns>
+        public virtual NetPackage Clone()
         {
-            var dataSegment = this.DataSegment;
             return new NetPackage()
             {
                 Head = this.Head,
-                DataSegment = new DataSegment()
-                {
-                    QN = dataSegment.QN,
-                    PW = dataSegment.PW,
-                    MN = dataSegment.MN,
-                    PackageFlag = new PackageFlag(dataSegment.PackageFlag.Value),
-                    ST = dataSegment.ST,
-                    CN = dataSegment.CN,
-                    CpCommand = dataSegment.CpCommand,
-                },
+                DataSegment = DataSegment.Clone(),
                 Tail = this.Tail
             };
         }

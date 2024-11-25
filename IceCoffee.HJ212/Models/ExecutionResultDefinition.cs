@@ -2,6 +2,7 @@
 {
     /// <summary>
     /// 执行结果定义
+    /// <para>6.6.2 执行结果定义（可扩充）</para>
     /// </summary>
     public struct ExecutionResultDefinition
     {

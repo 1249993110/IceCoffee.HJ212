@@ -5,17 +5,17 @@
         /// <summary>
         /// CRC16校验
         /// </summary>
-        /// <param name="arg">需要校验的字符串</param>
+        /// <param name="str">需要校验的字符串</param>
         /// <returns>CRC16 校验码</returns>
-        public static string CRC16(string arg)
+        public static string CRC16(string str)
         {
-            char[] puchMsg = arg.ToCharArray();
-            int len = puchMsg.Length;
+            char[] chars = str.ToCharArray();
+            int len = chars.Length;
             uint i, j, crc_reg, check;
             crc_reg = 0xFFFF;
             for (i = 0; i < len; i++)
             {
-                crc_reg = (crc_reg >> 8) ^ puchMsg[i];
+                crc_reg = (crc_reg >> 8) ^ chars[i];
                 for (j = 0; j < 8; j++)
                 {
                     check = crc_reg & 0x0001;

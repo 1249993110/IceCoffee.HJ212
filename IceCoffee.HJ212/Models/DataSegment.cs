@@ -1,6 +1,4 @@
 ﻿using IceCoffee.Common.Extensions;
-using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace IceCoffee.HJ212.Models
@@ -64,22 +62,29 @@ namespace IceCoffee.HJ212.Models
         /// </summary>
         public CpCommand CpCommand { get; set; }
 
+        public DataSegment()
+        {
+            QN = string.Empty;
+            PW = string.Empty;
+            MN = string.Empty;
+            PackageFlag = new PackageFlag();
+            CpCommand = new CpCommand();
+        }
+
         /// <summary>
         /// 解析
         /// </summary>
         /// <param name="data"></param>
-        /// <param name="unpackCacheFunc"></param>
+        /// <param name="unpackCacheFunc">分包缓存</param>
         /// <returns></returns>
         public static DataSegment Parse(string data, Func<StringBuilder> unpackCacheFunc)
         {
             try
             {
-                DataSegment dataSegment = new DataSegment();
+                var dataSegment = new DataSegment();
+                dataSegment.QN = data.GetMidStr("QN=", ";", out int outEnd);
 
-                int outEnd;
-                dataSegment.QN = data.GetMidStr("QN=", ";", out outEnd);
-
-                if(outEnd < 0)
+                if (outEnd < 0)
                 {
                     outEnd = 0;
                 }
@@ -92,14 +97,14 @@ namespace IceCoffee.HJ212.Models
                 string packageFlag = data.GetMidStr("Flag=", ";", out outEnd, outEnd);
                 if (outEnd < 0 || string.IsNullOrEmpty(packageFlag) || byte.TryParse(packageFlag, out var flag) == false)
                 {
-                    outEnd = 0;
+                    throw new Exception("解析拆分包及应答标志Flag失败");
                 }
                 else
                 {
                     dataSegment.PackageFlag = new PackageFlag(flag);
                 }
 
-                if (dataSegment.PackageFlag != null && dataSegment.PackageFlag.D == 1)
+                if (dataSegment.PackageFlag.D == 1)
                 {
                     // 分包
                     dataSegment.PNUM = int.Parse(data.GetMidStr("PNUM=", ";", out outEnd, outEnd));
@@ -107,25 +112,34 @@ namespace IceCoffee.HJ212.Models
 
                     string cp = data.GetMidStr("CP=&&", "&&", out outEnd, outEnd);
                     var cache = unpackCacheFunc.Invoke();
-                    if(dataSegment.PNO == 1)// 第一个包
+                    if (dataSegment.PNO == 1)// 第一个包
                     {
                         cache.Append(cp);
                     }
                     else if (dataSegment.PNUM == dataSegment.PNO)// 最后一个包
                     {
+                        
+#if NETCOREAPP
+                        cache.Append(cp.AsSpan(23));
+#else
                         cache.Append(cp.Substring(23));
+#endif
                         dataSegment.CpCommand = new CpCommand(cache.ToString());
                         cache.Clear();
                     }
                     else// 中间的包
                     {
-                        cache.Append(cp.Substring(23));// 23 - DataTime=20170920100000; 留分号
+                        // 23 - DataTime=20170920100000; 留分号
+#if NETCOREAPP
+                        cache.Append(cp.AsSpan(23));
+#else
+                        cache.Append(cp.Substring(23));
+#endif
                     }
                 }
                 else
                 {
                     string text = data.GetMidStr("CP=&&", "&&", out outEnd, outEnd);
-                    // 过滤心跳包
                     dataSegment.CpCommand = new CpCommand(text);
                 }
 
@@ -145,5 +159,25 @@ namespace IceCoffee.HJ212.Models
         {
             return $"QN={QN};ST={ST};CN={(int)CN};PW={PW};MN={MN};Flag={PackageFlag.Value};CP=&&{CpCommand.RawText}&&";
         }
+
+        /// <summary>
+        /// 克隆
+        /// </summary>
+        /// <returns></returns>
+        public virtual DataSegment Clone()
+        {
+            return new DataSegment()
+            {
+                QN = this.QN,
+                ST = this.ST,
+                CN = this.CN,
+                PW = this.PW,
+                MN = this.MN,
+                PackageFlag = new PackageFlag(this.PackageFlag.Value),
+                PNUM = this.PNUM,
+                PNO = this.PNO,
+                CpCommand = new CpCommand(this.CpCommand.RawText),
+            };
+        } 
     }
 }

@@ -1,5 +1,9 @@
 ﻿namespace IceCoffee.HJ212.Models
 {
+    /// <summary>
+    /// 系统编码（引用GB/T16706-1996）
+    /// <para>6.6.1.2 系统编码方法</para>
+    /// </summary>
     public struct SystemCodes
     {
         public const int 地表水质量监测 = 21;

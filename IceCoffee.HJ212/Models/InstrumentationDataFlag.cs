@@ -2,6 +2,7 @@
 {
     /// <summary>
     /// 检测仪器数据标记
+    /// <para>6.6.4数据标记（可扩充）</para>
     /// </summary>
     public struct InstrumentationDataFlag
     {
@@ -52,13 +53,5 @@
         /// <para>在线监控（监测）仪器仪表与数采仪通讯异常</para>
         /// </summary>
         public const string B = nameof(B);
-
-        ///// <summary>
-        ///// 无效（有效数据不足）
-        ///// </summary>
-        ///// <remarks>
-        ///// 按照5分钟、1小时均值计算要求，所获取的有效数据个数不足
-        ///// </remarks>
-        //H
     }
 }

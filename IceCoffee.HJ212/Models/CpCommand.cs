@@ -1,5 +1,4 @@
 ﻿using IceCoffee.Common.Extensions;
-using System;
 
 namespace IceCoffee.HJ212.Models
 {
@@ -46,16 +45,6 @@ namespace IceCoffee.HJ212.Models
         }
 
         /// <summary>
-        /// 获取日期
-        /// </summary>
-        /// <param name="startIndex"></param>
-        /// <returns></returns>
-        public DateTime GetDateTime(int startIndex)
-        {
-            return GetDateTime(RawText, startIndex);
-        }
-
-        /// <summary>
         /// 尝试获取值
         /// </summary>
         /// <param name="key"></param>
@@ -65,17 +54,6 @@ namespace IceCoffee.HJ212.Models
         public bool TryGetValue(string key, out string value, string end = ";")
         {
             return TryGetValue(RawText, key, out value, end);
-        }
-
-        /// <summary>
-        /// 获取日期
-        /// </summary>
-        /// <param name="rawText"></param>
-        /// <param name="startIndex"></param>
-        /// <returns></returns>
-        public static DateTime GetDateTime(string rawText, int startIndex)
-        {
-            return DateTime.ParseExact(rawText.Substring(startIndex, 14), "yyyyMMddHHmmss", null);
         }
 
         /// <summary>

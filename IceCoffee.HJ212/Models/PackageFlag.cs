@@ -5,22 +5,54 @@
     /// </summary>
     public class PackageFlag
     {
-        public byte V5 => GetBit(Value, 7);
-        public byte V4 => GetBit(Value, 6);
-        public byte V3 => GetBit(Value, 5);
-        public byte V2 => GetBit(Value, 4);
-        public byte V1 => GetBit(Value, 3);
-        public byte V0 => GetBit(Value, 2);
+        public byte V5
+        {
+            get { return GetBit(Value, 7); }
+            set { Value = value == 1 ? SetBit(Value, 7) : ClearBit(Value, 7); }
+        }
+        public byte V4
+        {
+            get { return GetBit(Value, 6); }
+            set { Value = value == 1 ? SetBit(Value, 6) : ClearBit(Value, 6); }
+        }
+        public byte V3
+        {
+            get { return GetBit(Value, 5); }
+            set { Value = value == 1 ? SetBit(Value, 5) : ClearBit(Value, 5); }
+        }
+        public byte V2
+        {
+            get { return GetBit(Value, 4); }
+            set { Value = value == 1 ? SetBit(Value, 4) : ClearBit(Value, 4); }
+        }
+        public byte V1
+        {
+            get { return GetBit(Value, 3); }
+            set { Value = value == 1 ? SetBit(Value, 3) : ClearBit(Value, 3); }
+        }
+        public byte V0
+        {
+            get { return GetBit(Value, 2); }
+            set { Value = value == 1 ? SetBit(Value, 2) : ClearBit(Value, 2); }
+        }
 
         /// <summary>
         /// 是否有数据包序号：1 - 数据包中包含包号和总包数两部分，0 - 数据包中不包含包号和总包数两部分
         /// </summary>
-        public byte D => GetBit(Value, 1);
+        public byte D
+        {
+            get { return GetBit(Value, 1); }
+            set { Value = value == 1 ? SetBit(Value, 1) : ClearBit(Value, 1); }
+        }
 
         /// <summary>
         /// 命令是否应答：1－应答，0－不应答
         /// </summary>
-        public byte A => GetBit(Value, 0);
+        public byte A
+        {
+            get { return GetBit(Value, 0); }
+            set { Value = value == 1 ? SetBit(Value, 0) : ClearBit(Value, 0); }
+        }
 
         /// <summary>
         /// 标准版本号
@@ -40,13 +72,16 @@
         /// </summary>
         public byte Value { get; private set; }
 
+        public PackageFlag()
+        {
+        }
         public PackageFlag(byte flag)
         {
             Value = flag;
         }
 
         /// <summary>
-        /// 获取取第index位
+        /// 获取第index位
         /// </summary>
         /// <remarks>
         /// index从0开始
@@ -56,7 +91,6 @@
         /// <returns></returns>
         private static byte GetBit(byte b, int index) 
         {
-            // (byte)((from & (0xFF << (index * 8))) >> (index * 8))
             return ((b & (1 << index)) > 0) ? (byte)1 : (byte)0; 
         }
 

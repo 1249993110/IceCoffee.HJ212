@@ -2,6 +2,7 @@
 {
     /// <summary>
     /// 请求命令返回
+    /// <para>6.6.3 请求命令返回（可扩充）</para>
     /// </summary>
     public struct RequestCommandReturn
     {

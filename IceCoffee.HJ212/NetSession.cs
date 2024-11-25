@@ -1,72 +1,90 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using IceCoffee.HJ212.Models;
-using IceCoffee.Common.Extensions;
-using IceCoffee.FastSocket.Tcp;
 
 namespace IceCoffee.HJ212
 {
-    public class NetSession : TcpSession
+    public abstract class NetSession : IDisposable
     {
-        private StringBuilder _unpackCache;
+        private readonly TcpClient _client;
+        private readonly NetServer _server;
+        private readonly DateTime _connectedTime;
+        private readonly IPEndPoint _remoteEndPoint;
+        private StringBuilder? _unpackCache;
 
-        public NetSession(TcpServer server) : base(server)
-        {
-        }
+        public TcpClient Client => _client;
+        public NetServer Server => _server;
+        public DateTime ConnectedTime => _connectedTime;
+        public IPEndPoint RemoteEndPoint => _remoteEndPoint;
 
-        protected override void OnClosed()
+        public NetSession(TcpClient client, NetServer server)
         {
-            base.OnClosed();
-            _unpackCache?.Clear();
+            _client = client;
+            _server = server;
+            _connectedTime = DateTime.Now;
+            _remoteEndPoint = (IPEndPoint)client.Client.RemoteEndPoint!;
         }
 
         /// <summary>
         /// 获取分包缓存
         /// </summary>
         /// <returns></returns>
-        private StringBuilder GetUnpackCache()
+        internal StringBuilder GetUnpackCache()
         {
             return _unpackCache ??= new StringBuilder();
         }
 
-        protected override void OnReceived()
+        protected internal virtual void OnConnected() { }
+        protected internal virtual void OnDisconnected() { }
+        protected internal virtual void OnReceived(NetPackage? netPackage, string rawText)
         {
-            if (ReadBuffer.IndexOf(35) != 0L)// '#'
-            {
-                throw new Exception("异常TCP连接 IP: " + RemoteIPEndPoint);
-            }
-
-            string rawText = null;
-            while (ReadBuffer.CanReadLine)
-            {
-                try
-                {
-                    byte[] data = ReadBuffer.ReadLine();
-                    rawText = Encoding.UTF8.GetString(data);
-                    NetPackage netPackage = NetPackage.Parse(rawText, GetUnpackCache);
-                    ((NetServer)Server).RaiseReceivedData(this, netPackage, rawText);
-                }
-                catch (Exception ex)
-                {
-                    throw new Exception("数据报：" + rawText, ex);
-                }
-            }
         }
+        protected virtual void OnSent(string rawText) { }
 
-        /// <summary>
-        /// 应答
-        /// </summary>
-        public void Response(NetPackage netPackage)
+        public virtual void Send(NetPackage netPackage)
         {
             string rawText = netPackage.Serialize();
-            byte[] data = Encoding.UTF8.GetBytes(rawText);
-
-            this.SendAsync(data);
-            ((NetServer)Server).RaiseSendData(this, netPackage, rawText);
+            Send(rawText);
         }
-    }
 
+        public virtual void Send(string rawText)
+        {
+            byte[] data = _server.Encoding.GetBytes(rawText);
+            _client.Client.Send(data);
+            OnSent(rawText);
+        }
+
+        public virtual void Close()
+        {
+            _client.Close();
+        }
+
+        #region IDisposable Support
+        public bool IsDisposed { get; private set; }
+        ~NetSession()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!IsDisposed)
+            {
+                if (disposing)
+                {
+                    Close();
+                }
+
+                IsDisposed = true;
+            }
+        }
+        #endregion
+    }
 }
