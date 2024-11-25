@@ -73,32 +73,32 @@ namespace IceCoffee.HJ212
                 session.Close();
             }
         }
-        
+
         private async void AcceptClientsAsync()
         {
-            while (_isListening)
+            try
             {
-                try
+                while (_isListening)
                 {
                     var tcpClient = await _tcpListener.AcceptTcpClientAsync();
                     ThreadPool.UnsafeQueueUserWorkItem(new WaitCallback(HandleClientAsync), tcpClient);
                 }
-                catch (SocketException ex)
-                {
-                    var error = ex.SocketErrorCode;
-                    // Ignore disconnect errors
-                    if ((error == SocketError.ConnectionAborted) 
-                        || (error == SocketError.ConnectionRefused) 
-                        || (error == SocketError.ConnectionReset) 
-                        || (error == SocketError.OperationAborted)
-                        || (error == SocketError.Shutdown))
-                        return;
-                    OnError(new Exception("Error in NetServer.AcceptClientsAsync", ex));
-                }
-                catch (Exception ex)
-                {
-                    OnError(new Exception("Error in NetServer.AcceptClientsAsync", ex));
-                }
+            }
+            catch (SocketException ex)
+            {
+                var error = ex.SocketErrorCode;
+                // Ignore disconnect errors
+                if ((error == SocketError.ConnectionAborted)
+                    || (error == SocketError.ConnectionRefused)
+                    || (error == SocketError.ConnectionReset)
+                    || (error == SocketError.OperationAborted)
+                    || (error == SocketError.Shutdown))
+                    return;
+                OnError(new Exception("Error in NetServer.AcceptClientsAsync", ex));
+            }
+            catch (Exception ex)
+            {
+                OnError(new Exception("Error in NetServer.AcceptClientsAsync", ex));
             }
         }
 
