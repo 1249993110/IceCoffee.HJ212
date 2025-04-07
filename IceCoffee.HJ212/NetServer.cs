@@ -9,12 +9,12 @@ namespace IceCoffee.HJ212
     public abstract class NetServer : IDisposable
     {
         private readonly TcpListener _tcpListener;
-        private volatile bool _isListening;
+        private volatile int _isListening;
         private readonly ConcurrentDictionary<IPEndPoint, NetSession> _sessions = new ConcurrentDictionary<IPEndPoint, NetSession>();
         private readonly Encoding _encoding;
 
         public TcpListener TcpListener => _tcpListener;
-        public bool IsListening => _isListening;
+        public bool IsListening => _isListening != 0;
         public IReadOnlyDictionary<IPEndPoint, NetSession> Sessions => _sessions;
         public Encoding Encoding => _encoding;
 
@@ -43,23 +43,39 @@ namespace IceCoffee.HJ212
 
         public virtual void Start()
         {
+            if (Interlocked.CompareExchange(ref _isListening, 1, 0) != 0)
+            {
+                throw new InvalidOperationException("Server is already started.");
+            }
+
             _tcpListener.Start();
-            _isListening = true;
             AcceptClientsAsync();
             OnStarted();
         }
 
         public virtual void Start(int backlog)
         {
+            if (Interlocked.CompareExchange(ref _isListening, 1, 0) != 0)
+            {
+                throw new InvalidOperationException("Server is already started.");
+            }
+            if (backlog < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(backlog), "Backlog must be greater than 0.");
+            }
+
             _tcpListener.Start(backlog);
-            _isListening = true;
             AcceptClientsAsync();
             OnStarted();
         }
 
         public virtual void Stop()
         {
-            _isListening = false;
+            if (Interlocked.CompareExchange(ref _isListening, 0, 1) != 1)
+            {
+                throw new InvalidOperationException("Server is not started.");
+            }
+
             _tcpListener.Stop();
             DisconnectAll();
             OnStopped();
@@ -78,7 +94,7 @@ namespace IceCoffee.HJ212
         {
             try
             {
-                while (_isListening)
+                while (_isListening != 0)
                 {
                     var tcpClient = await _tcpListener.AcceptTcpClientAsync();
                     ThreadPool.UnsafeQueueUserWorkItem(new WaitCallback(HandleClientAsync), tcpClient);
@@ -181,7 +197,7 @@ namespace IceCoffee.HJ212
         {
             if (!IsDisposed)
             {
-                if (disposing)
+                if (disposing && IsListening)
                 {
                     Stop();
                 }
