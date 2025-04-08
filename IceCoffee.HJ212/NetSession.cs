@@ -5,7 +5,7 @@ using IceCoffee.HJ212.Models;
 
 namespace IceCoffee.HJ212
 {
-    public abstract class NetSession : IDisposable
+    public abstract class NetSession
     {
         private readonly TcpClient _client;
         private readonly NetServer _server;
@@ -59,32 +59,5 @@ namespace IceCoffee.HJ212
         {
             _client.Close();
         }
-
-        #region IDisposable Support
-        public bool IsDisposed { get; private set; }
-        ~NetSession()
-        {
-            Dispose(false);
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!IsDisposed)
-            {
-                if (disposing && _client.Connected)
-                {
-                    Close();
-                }
-
-                IsDisposed = true;
-            }
-        }
-        #endregion
     }
 }

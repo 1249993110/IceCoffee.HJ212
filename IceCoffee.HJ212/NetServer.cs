@@ -43,7 +43,7 @@ namespace IceCoffee.HJ212
 
         public virtual void Start()
         {
-            if (Interlocked.CompareExchange(ref _isListening, 1, 0) != 0)
+            if (Interlocked.Exchange(ref _isListening, 1) == 1)
             {
                 throw new InvalidOperationException("Server is already started.");
             }
@@ -55,7 +55,7 @@ namespace IceCoffee.HJ212
 
         public virtual void Start(int backlog)
         {
-            if (Interlocked.CompareExchange(ref _isListening, 1, 0) != 0)
+            if (Interlocked.Exchange(ref _isListening, 1) == 1)
             {
                 throw new InvalidOperationException("Server is already started.");
             }
@@ -71,19 +71,22 @@ namespace IceCoffee.HJ212
 
         public virtual void Stop()
         {
-            if (Interlocked.CompareExchange(ref _isListening, 0, 1) != 1)
+            if (Interlocked.Exchange(ref _isListening, 0) == 0)
             {
                 throw new InvalidOperationException("Server is not started.");
             }
 
+            // Stop accepting new clients
             _tcpListener.Stop();
             DisconnectAll();
             OnStopped();
         }
 
+        /// <summary>
+        /// Disconnect all sessions
+        /// </summary>
         public virtual void DisconnectAll()
         {
-            // Disconnect all sessions
             foreach (var session in _sessions.Values)
             {
                 session.Close();
@@ -197,14 +200,25 @@ namespace IceCoffee.HJ212
         {
             if (!IsDisposed)
             {
-                if (disposing && IsListening)
+                if (disposing)
                 {
-                    Stop();
+                    if(IsListening)
+                    {
+                        Stop();
+                    }
+                    else
+                    {
+#if NETCOREAPP
+                        _tcpListener.Dispose();
+#else
+                        _tcpListener.Server.Dispose();
+#endif
+                    }
                 }
 
                 IsDisposed = true;
             }
         }
-        #endregion
+#endregion
     }
 }
