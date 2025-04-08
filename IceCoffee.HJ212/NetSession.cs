@@ -77,7 +77,7 @@ namespace IceCoffee.HJ212
         {
             if (!IsDisposed)
             {
-                if (disposing)
+                if (disposing && _client.Connected)
                 {
                     Close();
                 }
