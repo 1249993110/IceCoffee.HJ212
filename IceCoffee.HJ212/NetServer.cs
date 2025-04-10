@@ -89,7 +89,13 @@ namespace IceCoffee.HJ212
         {
             foreach (var session in _sessions.Values)
             {
-                session.Close();
+                try
+                {
+                    session.Close();
+                }
+                catch
+                {
+                }
             }
         }
 
