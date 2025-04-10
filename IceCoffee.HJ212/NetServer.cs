@@ -99,7 +99,7 @@ namespace IceCoffee.HJ212
             {
                 while (_isListening != 0)
                 {
-                    var tcpClient = await _tcpListener.AcceptTcpClientAsync();
+                    var tcpClient = await _tcpListener.AcceptTcpClientAsync().ConfigureAwait(false);
                     ThreadPool.UnsafeQueueUserWorkItem(new WaitCallback(HandleClientAsync), tcpClient);
                 }
             }
