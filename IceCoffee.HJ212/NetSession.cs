@@ -57,6 +57,7 @@ namespace IceCoffee.HJ212
 
         public virtual void Close()
         {
+            _client.Client.Shutdown(SocketShutdown.Both);
             _client.Close();
         }
     }
