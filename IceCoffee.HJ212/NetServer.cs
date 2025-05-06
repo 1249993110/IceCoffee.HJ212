@@ -109,10 +109,14 @@ namespace IceCoffee.HJ212
                     ThreadPool.UnsafeQueueUserWorkItem(new WaitCallback(HandleClientAsync), tcpClient);
                 }
             }
+            catch (ObjectDisposedException)
+            {
+                // Ignore
+            }
             catch (SocketException ex)
             {
                 var error = ex.SocketErrorCode;
-                // Ignore disconnect errors
+                // Skip disconnect errors
                 if ((error == SocketError.ConnectionAborted)
                     || (error == SocketError.ConnectionRefused)
                     || (error == SocketError.ConnectionReset)

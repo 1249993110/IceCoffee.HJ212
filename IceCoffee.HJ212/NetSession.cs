@@ -57,8 +57,24 @@ namespace IceCoffee.HJ212
 
         public virtual void Close()
         {
-            _client.Client.Shutdown(SocketShutdown.Both);
-            _client.Close();
+            try
+            {
+                try
+                {
+                    _client?.Client.Shutdown(SocketShutdown.Both);
+
+                }
+                catch (SocketException)
+                {
+                }
+
+                // await Task.Delay(20);
+
+                _client?.Close();
+            }
+            catch (ObjectDisposedException)
+            {
+            }
         }
     }
 }
