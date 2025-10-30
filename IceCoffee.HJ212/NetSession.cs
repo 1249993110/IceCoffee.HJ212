@@ -39,6 +39,17 @@ namespace IceCoffee.HJ212
         protected internal virtual void OnDisconnected() { }
         protected internal virtual void OnReceived(NetPackage? netPackage, string rawText)
         {
+            if (netPackage != null)
+            {
+                netPackage = netPackage.Clone();
+                if (netPackage.DataSegment.PackageFlag.A == 1)
+                {
+                    netPackage.DataSegment.CpCommand = new CpCommand();
+                    netPackage.DataSegment.CN = CommandNumbers.DataResponse;
+                    netPackage.DataSegment.PackageFlag.A = 0;
+                    Send(netPackage);
+                }
+            }
         }
         protected virtual void OnSent(string rawText) { }
 
