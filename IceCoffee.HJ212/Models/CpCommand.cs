@@ -56,6 +56,15 @@ namespace IceCoffee.HJ212.Models
             return TryGetValue(RawText, key, out value, end);
         }
 
+        public string this[string key]
+        {
+            get 
+            {
+                TryGetValue(key, out string value);
+                return value;
+            }
+        }
+
         /// <summary>
         /// 尝试获取值
         /// </summary>
